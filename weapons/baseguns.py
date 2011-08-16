@@ -20,9 +20,10 @@ class BaseGun:
         self.background = background
 
     def shoot(self, mousePos):
-        if self.turnsToFire == 0 and (self.ammo>0 or self.ammo == -1):
+        if self.turnsToFire == 0 and (self.currentClip>0):
             self.turnsToFire = self.shotTime
             self.bulletGroup.add(Bullet(self.damage, self.speed, mousePos, self.gunPos))
+            self.currentClip -= 1
     def update(self):
         self.bulletGroup.clear(self.screen,self.background)
         self.bulletGroup.update()
