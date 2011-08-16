@@ -220,12 +220,12 @@ def manageCollisions(UpdateManager, score):
 
 
 
-def main():
+def gameLoop(size, level):
     pygame.init()
     clock = pygame.time.Clock()
     
     #Create and set the screen and size
-    screenSize = [500,500]
+    screenSize = size
     screenCentre = [screenSize[0]/2,screenSize[1]/2]
     
     screen = pygame.display.set_mode(screenSize)
@@ -238,7 +238,7 @@ def main():
     running = True
     
     #Initialise the group manager
-    updateManager = UpdateManager(screen, background, screenCentre, 1)
+    updateManager = UpdateManager(screen, background, screenCentre, level)
     
     shootButtonDown = False
     singleShotFired = False
@@ -288,10 +288,45 @@ def main():
             
         
         pygame.display.flip()
+
+
+def mainLoop(screenSize):
+    """This is the loop that handles the progression for each phase of the game.
     
+    Screen(welcome)
+    |
+    v
+    screen(level intro) <------------
+    |                               |
+    v                               |
+    gameLoop(level)                 |
+    | ##RETURN SCORE AND HEALTH##   |
+    v                               |
+    screen(upgrades and ammo)-------|
+
+
+
+
+    
+    Arguments:
+    - `screenSize`:
+    """
+    #Show the welcome screen here
+    
+    level = 1
+
+    while True:
+        #Show level intro
+
+        gameLoop(screenSize, level)
         
+        #Show upgrades screen
+
+        level += 1
+
+
 if __name__ == '__main__':
-    main()
+    mainLoop([500,500])
     
 
 

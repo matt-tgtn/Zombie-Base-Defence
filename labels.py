@@ -30,7 +30,7 @@ class AmmoCounter(pygame.sprite.Sprite):
     def update(self, currentGun):
         self.initVars(currentGun)
         self.image, self.rect = self.construct()
-        self.rect.right = self._screenPos[0]
+        self.rect.right = self._screenPos[0]-5
         self.rect.bottom = self._screenPos[1]
 
     def construct(self):

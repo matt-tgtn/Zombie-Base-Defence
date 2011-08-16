@@ -70,7 +70,7 @@ class SMG(BaseGun):
     clipSize = 50
     ammo = 200
     reloadTime = 90
-    shotTime = 3
+    shotTime = 5
     gunType = 'auto'
     
     def __init__(self, gunPos, screen, background, bulletGroup):
