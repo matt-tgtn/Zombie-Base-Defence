@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+
+############################################
+##  Copyright (C) Matt Titterington 2011  ##
+##                                        ##
+##  Released under the terms of the GNU   ##
+##      General Public License. See       ##
+##     LICENSE.txt for more details.      ##
+############################################
+
 import pygame
 from pygame.locals import KEYDOWN, K_ESCAPE
 
