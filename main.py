@@ -7,6 +7,13 @@ try:
     import weapons.baseguns as baseguns
     import zombies
     import labels
+    from screens import Screens
+
+    #Personal event identifiers
+    global ROUNDOVER
+    global GAMEOVER
+    ROUNDOVER = pygame.USEREVENT
+    GAMEOVER = pygame.USEREVENT+1
 except ImportError:
     print 'Pygame must be installed. Please install pygame'
     
@@ -178,10 +185,16 @@ class UpdateManager():
             spritegroup.draw(self.screen)
 
                         
-        self.zombieManager.update()
+        if not (self.zombieManager.update() == True):
+            pygame.event.post(pygame.event.Event(ROUNDOVER))
+            
         
     def createZombieDict(self,level):
-        spawnDict = {'zombie':[20,20]}
+        frequency = 60-(level*2)
+        number = 15+(level - 1)
+        healthModifier = 1+(0.5*math.floor(level/float(5)))
+
+        spawnDict = {'zombie':[frequency,number, healthModifier]}
         #TODO: Refactor this code to actually work xD
         return spawnDict
 
@@ -203,7 +216,8 @@ def manageCollisions(UpdateManager, score):
     for bullet in collisions:
         for zombie in collisions[bullet]:
             zombie.health -= bullet.damage
-            score += zombie.availableScore
+            if zombie.health <= 0:
+                score += zombie.availableScore
 
     #Collide house and zombies
     house = UpdateManager.house
@@ -235,6 +249,9 @@ def gameLoop(size, level):
     
     score = 0
     
+
+    
+
     running = True
     
     #Initialise the group manager
@@ -250,9 +267,9 @@ def gameLoop(size, level):
         updateManager.update()
         #Manage the collisions
         score = manageCollisions(updateManager, score)
-
-        print 'Health: %s' % updateManager.house.health
-        print 'Score: %s' % (score)
+        
+        #print 'Health: %s' % updateManager.house.health
+        #print 'Score: %s' % (score)
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
@@ -274,6 +291,9 @@ def gameLoop(size, level):
                 singleShotFired = False
             elif event.type == MOUSEBUTTONUP:
                 shootButtonDown = False
+            elif event.type == ROUNDOVER:
+                print 'EVENT SUCCESS'
+                running = False
         
         #This handles the semi automatic ability of the guns
         if shootButtonDown:
@@ -315,8 +335,12 @@ def mainLoop(screenSize):
     
     level = 1
 
+    screenManager = Screens(screenSize)
+
+    screenManager.gameIntro()
+
     while True:
-        #Show level intro
+        screenManager.roundIntro(level)
 
         gameLoop(screenSize, level)
         

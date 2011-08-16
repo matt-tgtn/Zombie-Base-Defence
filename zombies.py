@@ -13,7 +13,7 @@ class ZombieSpawner:
     It will also update the zombie sprites to make them move.
     
     Dictionary format:
-    {"Zombie name":[frequency, numberZombies], 
+    {"Zombie name":[frequency, numberZombies, healthModifier], 
      ... }
     
     "Zombie name": This is the name of the zombie (all lower case)
@@ -35,13 +35,16 @@ class ZombieSpawner:
         self.frequencies = []
         self.totalZombies = []
         self.currentTotals = []
+        self.healthModifiers = []
         
         
+
         #Interpret the spawn dict and save it in the class
         for i in self.zombieTypes:
             if i in spawnDict:
                 self.frequencies.append(spawnDict[i][0])
                 self.totalZombies.append(spawnDict[i][1])
+                self.healthModifiers.append(spawnDict[i][2])
             else:
                 self.frequencies.append(0)
                 self.totalZombies.append(0)
@@ -49,6 +52,8 @@ class ZombieSpawner:
         
         self.activeZombies = pygame.sprite.RenderUpdates()
         
+        print 'This round, the zombies will spawn every %s frames until %s have spawned and have %s percent health'%(self.frequencies[0], self.totalZombies[0], self.healthModifiers[0]*100)
+
     def update(self):
         
         
@@ -63,6 +68,7 @@ class ZombieSpawner:
             if modulo==0 and self.currentTotals[i]<self.totalZombies[i]:
                 if i == 0:
                     newClass = Zombie(self.screenSize, self.baseLocation)
+                    newClass.health = newClass.health * self.healthModifiers[i]
                 elif i == 1:
                     newClass = Fast(self.screenSize, self.baseLocation)
                 
@@ -74,7 +80,18 @@ class ZombieSpawner:
         self.activeZombies.update()
         self.activeZombies.draw(self.screen)
         
-        self.frame += 1      
+        self.frame += 1
+
+        zombiesToBeSpawned = False
+        for i in xrange(len(self.currentTotals)):
+            if not self.currentTotals[i]==self.totalZombies[i]:
+                zombiesToBeSpawned = True
+        
+        
+        if (not zombiesToBeSpawned) and len(self.activeZombies)==0:
+            return False
+        else:
+            return True
     
     
 class BaseZombie(pygame.sprite.Sprite):
@@ -128,7 +145,7 @@ class Zombie(BaseZombie):
 
     size = [21,21]
     speed = 0.25
-    health = 20
+    health = 25
     damagePerFrame = 0.25
 
     def __init__(self, screenSize, baseLocation):

@@ -43,7 +43,7 @@ class AmmoCounter(pygame.sprite.Sprite):
         elif self._currentGun == 'sniper':
             gunBMP = 'SNIPERicon.bmp'
         gunImage, gunImageRect = load_image(gunBMP)
-        print gunImage.get_colorkey()
+        
 
 
         ammoText = '%s/%s'%(self._currentClip, self._ammo)
