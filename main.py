@@ -195,9 +195,11 @@ class UpdateManager():
             spritegroup.update(self.player.currentGun)
             spritegroup.draw(self.screen)
 
-                        
+        #These are the round termination and game termination event sources
         if not (self.zombieManager.update() == True):
             pygame.event.post(pygame.event.Event(ROUNDOVER))
+        if self.house.health <= 0:
+            pygame.event.post(pygame.event.Event(GAMEOVER))
             
         
     def createZombieDict(self,level):
@@ -304,7 +306,9 @@ def gameLoop(size, level):
                 shootButtonDown = False
             elif event.type == ROUNDOVER:
                 print 'EVENT SUCCESS'
-                running = False
+                return True
+            elif event.type == GAMEOVER:
+                return False
         
         #This handles the semi automatic ability of the guns
         if shootButtonDown:
@@ -349,15 +353,20 @@ def mainLoop(screenSize):
     screenManager = Screens(screenSize)
 
     screenManager.gameIntro()
+    
+    gameOver = False
 
-    while True:
+    while not gameOver:
         screenManager.roundIntro(level)
 
-        gameLoop(screenSize, level)
+        if gameLoop(screenSize, level):
+            level += 1
+        else:
+            gameOver = True
         
         #Show upgrades screen
 
-        level += 1
+    screenManager.gameOver(level)
 
 
 if __name__ == '__main__':
