@@ -6,6 +6,7 @@ try:
     import math
     import weapons.baseguns as baseguns
     import zombies
+    import labels
 except ImportError:
     print 'Pygame must be installed. Please install pygame'
     
@@ -151,14 +152,19 @@ class UpdateManager():
 
         self.zombieManager = zombies.ZombieSpawner(spawnDict,screen.get_rect().size,screenCentre,screen,background)
 
-        #Declaring the groups
+        #Declaring the playerAsset group
         self.playerAssetGroup = pygame.sprite.OrderedUpdates()
         self.player = Player(screenCentre, screen, background)
         self.house = House(self.screenCentre)
         self.playerAssetGroup.add(self.house)
         self.playerAssetGroup.add(self.player)
         
-    
+        #Declaring the single sprite groups list and populating it accordingly
+        self.singleSpriteGroups = []
+
+        ammocounter = pygame.sprite.GroupSingle()
+        ammocounter.add(labels.AmmoCounter(self.screen.get_size(), self.player.currentGun))
+        self.singleSpriteGroups.append(ammocounter)
 
     def update(self):
         #Update the groups
@@ -166,6 +172,12 @@ class UpdateManager():
         self.playerAssetGroup.update(pygame.mouse.get_pos())
         self.playerAssetGroup.draw(self.screen)
         
+        for spritegroup in self.singleSpriteGroups:
+            spritegroup.clear(self.screen, self.background)
+            spritegroup.update(self.player.currentGun)
+            spritegroup.draw(self.screen)
+
+                        
         self.zombieManager.update()
         
     def createZombieDict(self,level):

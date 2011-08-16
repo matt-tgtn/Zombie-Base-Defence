@@ -36,8 +36,15 @@ class BaseGun:
         if self.turnsToFire == 0:
             self.turnsToFire = self.reloadTime #reload time = 1 sec
             if not self.ammo == -1:
-                self.ammo -= self.clipSize
-            self.currentClip = self.clipSize
+                if self.ammo>=self.clipSize:
+                    self.ammo -= self.clipSize
+                    self.currentClip = self.clipSize
+                else:
+                    self.currentClip = self.ammo
+                    self.ammo = 0
+            else:
+                self.currentClip = self.clipSize
+            
 
 class M9(BaseGun):
     damage = 20
@@ -51,6 +58,11 @@ class M9(BaseGun):
     def __init__(self, gunPos, screen, background, bulletGroup):
         BaseGun.__init__(self, gunPos, screen, background, bulletGroup)
         self.currentClip = self.clipSize
+    def __str__(self):
+        """
+        """
+        return 'm9'
+
 
 class SMG(BaseGun):
     damage = 10
@@ -63,7 +75,12 @@ class SMG(BaseGun):
     
     def __init__(self, gunPos, screen, background, bulletGroup):
         BaseGun.__init__(self, gunPos, screen, background, bulletGroup)
-        self.currentClip = self.clipSize    
+        self.currentClip = self.clipSize 
+    def __str__(self):
+        """
+        """
+        return 'smg'
+
 
 class SNIPER(BaseGun):
     damage = 75
@@ -77,7 +94,12 @@ class SNIPER(BaseGun):
     def __init__(self, gunPos, screen, background, bulletGroup):
         BaseGun.__init__(self, gunPos, screen, background, bulletGroup)
         self.currentClip = self.clipSize
-        
+    def __str__(self):
+        """
+        """
+        return 'sniper'
+
+
         
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, damage, speed, mousePos, bulletOrigin):
